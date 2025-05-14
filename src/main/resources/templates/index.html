@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PuntoOSS - Bakery Sales System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #FFF8E7;
+            color: #3C2F2F;
+            font-family: 'Arial', sans-serif;
+        }
+        .table-header {
+            background-color: #A0522D;
+            color: #FFF8E7;
+        }
+        .table-row:nth-child(even) {
+            background-color: #D2B48C;
+        }
+        .table-row:hover {
+            background-color: #E6D3B3;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+<header class="bg-[#8B4513] text-[#FFF8E7] p-4 text-center">
+    <h1 class="text-3xl font-bold">PuntoOSS - Bakery Sales System</h1>
+</header>
+
+<main class="flex-grow container mx-auto p-6">
+    <!-- Report Selection -->
+    <section class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4">Generate Report</h2>
+        <div class="flex flex-col sm:flex-row gap-4">
+            <select id="reportType" class="p-2 border border-[#8B4513] rounded-md bg-[#FFF8E7] text-[#3C2F2F]">
+                <option value="daily">Daily Report</option>
+                <option value="weekly">Weekly Report</option>
+                <option value="monthly">Monthly Report</option>
+                <option value="general">General Report</option>
+            </select>
+            <div id="reportParams" class="flex gap-4">
+                <!-- Dynamic inputs will be added here based on report type -->
+            </div>
+            <button id="generateReport" class="bg-[#8B4513] text-[#FFF8E7] px-4 py-2 rounded-md hover:bg-[#A0522D]">
+                Generate Report
+            </button>
+        </div>
+    </section>
+
+    <!-- Add Sale Form -->
+    <section class="mb-8 bg-[#D2B48C] p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold mb-4">Add New Sale</h2>
+        <form id="saleForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label for="date" class="block text-sm font-medium">Date</label>
+                <input type="date" id="date" name="date" required
+                       class="w-full p-2 border border-[#8B4513] rounded-md bg-[#FFF8E7]">
+            </div>
+            <div>
+                <label for="time" class="block text-sm font-medium">Time</label>
+                <input type="time" id="time" name="time" required
+                       class="w-full p-2 border border-[#8B4513] rounded-md bg-[#FFF8E7]">
+            </div>
+            <div>
+                <label for="day" class="block text-sm font-medium">Day</label>
+                <select id="day" name="day" required
+                        class="w-full p-2 border border-[#8B4513] rounded-md bg-[#FFF8E7]">
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                </select>
+            </div>
+            <div>
+                <label for="service" class="block text-sm font-medium">Service</label>
+                <input type="text" id="service" name="service" required
+                       class="w-full p-2 border border-[#8B4513] rounded-md bg-[#FFF8E7]">
+            </div>
+            <div>
+                <label for="total" class="block text-sm font-medium">Total</label>
+                <input type="number" id="total" name="total" step="0.01" required
+                       class="w-full p-2 border border-[#8B4513] rounded-md bg-[#FFF8E7]">
+            </div>
+            <div class="sm:col-span-2">
+                <button type="submit" class="bg-[#8B4513] text-[#FFF8E7] px-4 py-2 rounded-md hover:bg-[#A0522D]">
+                    Save Sale
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <!-- Sales Tables -->
+    <section class="space-y-8">
+        <div>
+            <h2 class="text-2xl font-semibold mb-4">Daily Sales</h2>
+            <table class="w-full border-collapse">
+                <thead>
+                <tr class="table-header">
+                    <th class="p-2">Date</th>
+                    <th class="p-2">Time</th>
+                    <th class="p-2">Day</th>
+                    <th class="p-2">Service</th>
+                    <th class="p-2">Total</th>
+                </tr>
+                </thead>
+                <tbody id="dailySalesTable"></tbody>
+            </table>
+        </div>
+
+        <div>
+            <h2 class="text-2xl font-semibold mb-4">Weekly Sales</h2>
+            <table class="w-full border-collapse">
+                <thead>
+                <tr class="table-header">
+                    <th class="p-2">Date</th>
+                    <th class="p-2">Time</th>
+                    <th class="p-2">Day</th>
+                    <th class="p-2">Service</th>
+                    <th class="p-2">Total</th>
+                </tr>
+                </thead>
+                <tbody id="weeklySalesTable"></tbody>
+            </table>
+        </div>
+
+        <div>
+            <h2 class="text-2xl font-semibold mb-4">Monthly Sales</h2>
+            <table class="w-full border-collapse">
+                <thead>
+                <tr class="table-header">
+                    <th class="p-2">Date</th>
+                    <th class="p-2">Time</th>
+                    <th class="p-2">Day</th>
+                    <th class="p-2">Service</th>
+                    <th class="p-2">Total</th>
+                </tr>
+                </thead>
+                <tbody id="monthlySalesTable"></tbody>
+            </table>
+        </div>
+
+        <div>
+            <h2 class="text-2xl font-semibold mb-4">All Sales</h2>
+            <table class="w-full border-collapse">
+                <thead>
+                <tr class="table-header">
+                    <th class="p-2">Date</th>
+                    <th class="p-2">Time</th>
+                    <th class="p-2">Day</th>
+                    <th class="p-2">Service</th>
+                    <th class="p-2">Total</th>
+                </tr>
+                </thead>
+                <tbody id="allSalesTable"></tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<footer class="bg-[#8B4513] text-[#FFF8E7] p-4 text-center">
+    <p>&copy; 2025 PuntoOSS. All rights reserved.</p>
+</footer>
+
+<script>
+    // Fetch sales data and populate tables
+    async function fetchSalesData() {
+        try {
+            // Fetch all sales
+            const allSales = await fetch('/api/sales/list').then(res => res.json());
+            populateTable('allSalesTable', allSales);
+
+            // Fetch daily sales (example: today)
+            const today = new Date().toISOString().split('T')[0];
+            const dailySales = await fetch(`/api/sales/daily/${today}`).then(res => res.json());
+            populateTable('dailySalesTable', dailySales);
+
+            // Fetch weekly sales (example: this week)
+            const weeklySales = await fetch(`/api/sales/weekly/${today}`).then(res => res.json());
+            populateTable('weeklySalesTable', weeklySales);
+
+            // Fetch monthly sales (example: current month)
+            const year = new Date().getFullYear();
+            const month = new Date().getMonth() + 1;
+            const monthlySales = await fetch(`/api/sales/monthly/${year}/${month}`).then(res => res.json());
+            populateTable('monthlySalesTable', monthlySales);
+        } catch (error) {
+            console.error('Error fetching sales:', error);
+        }
+    }
+
+    function populateTable(tableId, sales) {
+        const tbody = document.getElementById(tableId);
+        tbody.innerHTML = '';
+        sales.forEach(sale => {
+            const row = document.createElement('tr');
+            row.className = 'table-row';
+            row.innerHTML = `
+                <td class="p-2">${sale.fecha}</td>
+                <td class="p-2">${sale.hora}</td>
+                <td class="p-2">${sale.dia}</td>
+                <td class="p-2">${sale.servicio}</td>
+                <td class="p-2">$${sale.total.toFixed(2)}</td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // Handle form submission
+    document.getElementById('saleForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const sale = {
+            fecha: document.getElementById('date').value,
+            hora: document.getElementById('time').value,
+            dia: document.getElementById('day').value,
+            servicio: document.getElementById('service').value,
+            total: parseFloat(document.getElementById('total').value)
+        };
+        try {
+            await fetch('/api/sales', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(sale)
+            });
+            alert('Sale registered successfully!');
+            document.getElementById('saleForm').reset();
+            fetchSalesData(); // Refresh tables
+        } catch (error) {
+            console.error('Error registering sale:', error);
+            alert('Error registering sale.');
+        }
+    });
+
+    // Handle report generation
+    const reportTypeSelect = document.getElementById('reportType');
+    const reportParamsDiv = document.getElementById('reportParams');
+    const generateReportBtn = document.getElementById('generateReport');
+
+    function updateReportParams() {
+        reportParamsDiv.innerHTML = '';
+        const reportType = reportTypeSelect.value;
+        if (reportType === 'daily' || reportType === 'weekly') {
+            reportParamsDiv.innerHTML = `
+                <input type="date" id="reportDate" class="p-2 border border-[#8B4513] rounded-md bg-[#FFF8E7]">
+            `;
+        } else if (reportType === 'monthly') {
+            reportParamsDiv.innerHTML = `
+                <input type="number" id="reportYear" placeholder="Year" class="p-2 border border-[#8B4513] rounded-md bg-[#FFF8E7]">
+                <input type="number" id="reportMonth" placeholder="Month (1-12)" min="1" max="12" class="p-2 border border-[#8B4513] rounded-md bg-[#FFF8E7]">
+            `;
+        }
+    }
+
+    reportTypeSelect.addEventListener('change', updateReportParams);
+
+    generateReportBtn.addEventListener('click', () => {
+        const reportType = reportTypeSelect.value;
+        let url = '/reportes/';
+        if (reportType === 'daily' || reportType === 'weekly') {
+            const date = document.getElementById('reportDate')?.value;
+            if (!date) return alert('Please select a date.');
+            url += `${reportType}?date=${date}`;
+        } else if (reportType === 'monthly') {
+            const year = document.getElementById('reportYear')?.value;
+            const month = document.getElementById('reportMonth')?.value;
+            if (!year || !month) return alert('Please enter year and month.');
+            url += `monthly?year=${year}&month=${month}`;
+        } else {
+            url += 'general';
+        }
+        window.open(url, '_blank');
+    });
+
+    // Initialize
+    updateReportParams();
+    fetchSalesData();
+</script>
+</body>
+</html>
